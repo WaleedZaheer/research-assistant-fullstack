@@ -1,0 +1,75 @@
+.centerScreen {
+  min-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.greeting {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.subtext {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.form {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 560px;
+}
+
+.input {
+  flex: 1;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 14px 16px;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.submitButton {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 22px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  background-color: rgba(161, 97, 92, 0.15);
+  border: 1px solid var(--status-failed);
+  color: var(--status-failed);
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-top: 16px;
+  max-width: 560px;
+  width: 100%;
+  text-align: center;
+}

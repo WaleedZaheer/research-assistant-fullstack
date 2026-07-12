@@ -1,0 +1,124 @@
+.sidebar {
+  width: var(--sidebar-width);
+  min-height: 100vh;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 12px;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.logo {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  padding: 0 8px;
+}
+
+.newReportButton {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.newReportButton:hover {
+  background-color: var(--accent-hover);
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.historyLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  padding: 0 8px;
+  margin-bottom: 6px;
+}
+
+.historyItem {
+  display: block;
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 8px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.historyItem:hover {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.logoutButton {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+.logoutButton:hover {
+  border-color: var(--status-failed);
+  color: var(--status-failed);
+}
+.historyItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.historyText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot_pending {
+  background-color: var(--status-pending);
+}
+
+.dot_processing {
+  background-color: var(--status-processing);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.dot_done {
+  background-color: var(--status-done);
+}
+
+.dot_failed {
+  background-color: var(--status-failed);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
