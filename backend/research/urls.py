@@ -11,10 +11,3 @@ urlpatterns = [
     path('debug-migrate/', debug_migrate),
     path('', include(router.urls)),
 ]
-
-router = DefaultRouter()
-router.register(r'reports', ResearchReportViewSet, basename='report')
-
-urlpatterns = [
-    path('', include(router.urls)),
-]
