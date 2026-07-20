@@ -1,0 +1,31 @@
+.otpRow {
+  display: flex;
+  gap: 10px;
+}
+
+.otpBox {
+  width: 48px;
+  height: 56px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.03);
+  color: inherit;
+  transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.otpBox:focus {
+  outline: none;
+  border-color: #7c8ef0;
+  transform: scale(1.05);
+}
+
+.otpRowError .otpBox {
+  border-color: #e08080;
+}
+
+.otpBox:disabled {
+  opacity: 0.5;
+}

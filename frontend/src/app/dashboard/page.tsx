@@ -29,7 +29,9 @@ export default function DashboardPage() {
       const newReport = await api.createReport(topic);
       router.push(`/dashboard/reports/${newReport.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create report");
+      const message = err instanceof Error ? err.message : "Failed to create report";
+      console.trace("Dashboard setError:", message);
+      setError(message);
     } finally {
       setLoading(false);
     }

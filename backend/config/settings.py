@@ -151,3 +151,12 @@ CORS_ALLOWED_ORIGINS = os.getenv(
     'CORS_ALLOWED_ORIGINS',
     'http://localhost:3000'
 ).split(',')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('GMAIL_ADDRESS')
+EMAIL_HOST_PASSWORD = os.getenv('GMAIL_APP_PASSWORD')  # the 16-char app password, not your login password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:3000')  # used to build verification links

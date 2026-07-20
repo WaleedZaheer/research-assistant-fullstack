@@ -12,8 +12,8 @@ class ResearchReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ResearchReport
-        fields = ['id', 'topic', 'status', 'content', 'created_at', 'completed_at', 'sources']
-        read_only_fields = ['status', 'content', 'created_at', 'completed_at']
+        fields = ['id', 'topic', 'status', 'content', 'created_at', 'completed_at', 'archived', 'sources']
+        read_only_fields = ['status', 'content']
 
 
 class ResearchReportCreateSerializer(serializers.ModelSerializer):

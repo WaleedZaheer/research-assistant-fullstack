@@ -2,7 +2,6 @@ from rest_framework import viewsets, permissions
 from rest_framework.pagination import PageNumberPagination
 from .models import ResearchReport
 from .serializers import ResearchReportSerializer, ResearchReportCreateSerializer
-from .pipeline import process_report
 
 
 class ReportPagination(PageNumberPagination):
@@ -14,13 +13,21 @@ class ResearchReportViewSet(viewsets.ModelViewSet):
     pagination_class = ReportPagination
 
     def get_queryset(self):
-        return ResearchReport.objects.filter(user=self.request.user).order_by('-created_at')
+        queryset = ResearchReport.objects.filter(user=self.request.user).order_by('-created_at')
 
+        archived_param = self.request.query_params.get('archived')
+        if archived_param is not None:
+            is_archived = archived_param.lower() == 'true'
+            queryset = queryset.filter(archived=is_archived)
+
+        return queryset
+
+
+     
     def get_serializer_class(self):
         if self.action == 'create':
             return ResearchReportCreateSerializer
         return ResearchReportSerializer
-
+    
     def perform_create(self, serializer):
-        report = serializer.save(user=self.request.user)
-        process_report(report.id)
+        serializer.save(user=self.request.user)

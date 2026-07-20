@@ -1,19 +1,18 @@
 import os
+import time
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
+from httpx import ConnectError, ReadTimeout, RemoteProtocolError
 
 load_dotenv()
 
-# Initialize the Groq LLM — same model used across your other tasks
 llm = ChatGroq(
     model="llama-3.3-70b-versatile",
     api_key=os.getenv("GROQ_API_KEY"),
-    temperature=0.3  # lower temperature = more focused, less creative summarization
+    temperature=0.3
 )
 
-# The prompt template — {topic} and {article_text} get filled in at call time
 summary_prompt = ChatPromptTemplate.from_template(
     """You are a research assistant. Summarize the following article in 3-5 concise bullet points,
 focusing specifically on information relevant to the topic: "{topic}"
@@ -24,22 +23,39 @@ Article text:
 Summary (bullet points only, no preamble):"""
 )
 
-output_parser = StrOutputParser()
+summarize_chain = summary_prompt | llm
 
-# The LCEL chain: prompt -> llm -> parser
-summarize_chain = summary_prompt | llm | output_parser
+# Errors worth retrying — transient network/connection issues, not bad input
+RETRYABLE_ERRORS = (ConnectError, ReadTimeout, RemoteProtocolError)
 
-
-def summarize_article(topic: str, article_text: str, max_chars: int = 3000) -> str:
+def summarize_article(topic: str, article_text: str, max_chars: int = 3000, max_retries: int = 2) -> tuple[str, int]:
     """
     Summarizes a single article's text, focused on the given topic.
-    Truncates very long article text to keep prompts manageable.
+    Returns (summary_text, tokens_used) so callers can track usage.
+    Retries once on transient connection errors; falls back to a placeholder
+    summary (0 tokens) if Groq is unreachable after retrying, so one bad
+    article doesn't crash the whole report.
     """
     truncated_text = article_text[:max_chars]
 
-    summary = summarize_chain.invoke({
-        "topic": topic,
-        "article_text": truncated_text
-    })
+    attempt = 0
+    while True:
+        try:
+            response = summarize_chain.invoke({
+                "topic": topic,
+                "article_text": truncated_text
+            })
 
-    return summary
+            summary_text = response.content
+            usage = getattr(response, "usage_metadata", None)
+            tokens_used = usage["total_tokens"] if usage else 0
+
+            return summary_text, tokens_used
+
+        except RETRYABLE_ERRORS as e:
+            attempt += 1
+            if attempt > max_retries:
+                # Give up gracefully — this article gets a placeholder instead of
+                # crashing the whole pipeline. 0 tokens since nothing was actually used.
+                return f"[Summary unavailable — connection to the summarization service failed: {e}]", 0
+            time.sleep(1)  # brief pause before retry, since it's usually a momentary hiccup

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import SplashScreen from "@/components/SplashScreen";
+import { ToastProvider } from "@/context/ToastContext";
+import { ConfirmProvider } from "@/context/ConfirmContext";
 
 export const metadata: Metadata = {
   title: "Research Assistant",
@@ -15,7 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SplashScreen>{children}</SplashScreen>
+        <ToastProvider>
+          <ConfirmProvider>
+            <SplashScreen>{children}</SplashScreen>
+          </ConfirmProvider>
+        </ToastProvider>
       </body>
     </html>
   );

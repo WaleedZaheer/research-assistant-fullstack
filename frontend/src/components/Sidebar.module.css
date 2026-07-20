@@ -21,14 +21,14 @@
 
 .newReportButton {
   background-color: var(--accent);
-  color: white;
+  color: rgb(255, 255, 255);
   border: none;
-  border-radius: 6px;
+  border-radius: 40px;
   padding: 10px 12px;
   font-size: 13px;
   font-weight: 500;
   margin-bottom: 20px;
-  text-align: left;
+  text-align: center;
 }
 
 .newReportButton:hover {
@@ -121,4 +121,203 @@
 @keyframes pulse {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 1; }
+}
+.historyItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.historyText {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.renameInput {
+  flex: 1;
+  font-size: inherit;
+  font-family: inherit;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 2px 6px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+.emptyLabel {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #999);
+  padding: 8px 4px;
+}
+.sidebar {
+  transition: width 0.2s ease;
+}
+
+.sidebarCollapsed {
+  width: 64px;
+  padding: 20px 8px;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.collapseButton {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.collapseButton:hover {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.hiddenLabel {
+  display: none;
+}
+
+.avatarButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  margin-top: 12px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 13px;
+  width: 100%;
+}
+
+.avatarButton:hover {
+  background-color: var(--border-color);
+}
+
+.avatarCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.avatarName {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.avatarButton {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.avatarTopRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.avatarSubtext {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding-left: 38px;
+}
+
+.history {
+  scrollbar-width: thin;
+}
+.sidebar {
+  transition: width 0.2s ease;
+}
+
+.sidebarCollapsed {
+  width: 64px;
+  padding: 20px 8px;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.collapseButton {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.collapseButton:hover {
+  background-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.hiddenLabel {
+  display: none;
+}
+
+.avatarButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  margin-top: 12px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 13px;
+  width: 100%;
+}
+
+.avatarButton:hover {
+  background-color: var(--border-color);
+}
+
+.avatarCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.avatarName {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

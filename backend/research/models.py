@@ -15,6 +15,8 @@ class ResearchReport(models.Model):
     content = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(blank=True, null=True)
+    archived = models.BooleanField(default=False)
+
 
     def __str__(self):
         return f"{self.topic} ({self.status})"

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
+import { useToast } from "@/context/ToastContext";
 import styles from "../signup/signup.module.css";
 
 export default function LoginPage() {
@@ -12,6 +13,7 @@ export default function LoginPage() {
   const [fieldErrors, setFieldErrors] = useState<{ username?: string; password?: string }>({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
 
   function validate() {
     const errors: { username?: string; password?: string } = {};
@@ -32,9 +34,12 @@ export default function LoginPage() {
       const data = await api.login(username, password);
       localStorage.setItem("access_token", data.access);
       localStorage.setItem("refresh_token", data.refresh);
+      showToast("Logged in successfully", "success");
       router.push("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      const message = err instanceof Error ? err.message : "Login failed";
+      setError(message);
+      showToast(message, "error");
     } finally {
       setLoading(false);
     }
@@ -64,6 +69,10 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
         {fieldErrors.password && <span className={styles.fieldError}>{fieldErrors.password}</span>}
+
+        <p className={styles.linkText}>
+          <a href="/forgot-password">Forgot password?</a>
+        </p>
 
         <button className={styles.button} type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Log in"}

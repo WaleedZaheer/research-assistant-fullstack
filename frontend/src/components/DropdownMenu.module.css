@@ -1,0 +1,48 @@
+.trigger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--text-muted, #666);
+}
+
+.trigger:hover {
+  background: var(--border-color, #f0f0f0);
+}
+
+.menu {
+  min-width: 140px;
+  background: var(--bg-surface, #fff);
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.menuItem {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--text-primary, #222121);
+}
+
+.menuItem:hover {
+  background: var(--border-color, #f5f5f5);
+}
+
+.menuItem.danger {
+  color: var(--status-failed, #d33);
+}
+
+.menuItem.danger:hover {
+  background: rgba(211, 51, 51, 0.1);
+}

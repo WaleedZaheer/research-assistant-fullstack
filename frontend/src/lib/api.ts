@@ -67,8 +67,7 @@ let response = await fetch(url, {    ...options,
       throw new Error("Session expired. Please log in again.");
     }
   }
-
-  if (!response.ok) {
+if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
 
     if (errorData.detail) {
@@ -77,7 +76,14 @@ let response = await fetch(url, {    ...options,
 
     const firstFieldError = Object.values(errorData)[0];
     if (Array.isArray(firstFieldError) && firstFieldError.length > 0) {
-      throw new Error(firstFieldError[0] as string);
+      const err = new Error(firstFieldError[0] as string) as Error & { fields?: Record<string, string> };
+      err.fields = Object.fromEntries(
+        Object.entries(errorData).map(([key, val]) => [
+          key,
+          Array.isArray(val) ? (val[0] as string) : String(val),
+        ])
+      );
+      throw err;
     }
 
     throw new Error(`Request failed: ${response.status}`);
@@ -88,29 +94,137 @@ let response = await fetch(url, {    ...options,
 
       return response.json();
 }
-
 export const api = {
   signup: (username: string, email: string, password: string) =>
     apiFetch("/accounts/signup/", {
       method: "POST",
       body: JSON.stringify({ username, email, password }),
-    }, false),   // <-- new: third argument added
+    }, false),
 
   login: (username: string, password: string) =>
     apiFetch("/token/", {
       method: "POST",
       body: JSON.stringify({ username, password }),
-    }, false), 
+    }, false),
+
   getProfile: () => apiFetch("/accounts/profile/"),
+  updateProfile: (data: Partial<{ username: string; email: string }>) =>
+    apiFetch("/accounts/profile/", {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+
+  changePassword: (oldPassword: string, newPassword: string) =>
+    apiFetch("/accounts/change-password/", {
+      method: "POST",
+      body: JSON.stringify({ old_password: oldPassword, new_password: newPassword }),
+    }),
+
+  verifyEmail: (uid: string, token: string) =>
+    apiFetch(`/accounts/verify-email/${uid}/${token}/`, {
+      method: "GET",
+    }, false),
+
+  forgotPassword: (email: string) =>
+    apiFetch("/accounts/forgot-password/", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    }, false),
+
+  resetPassword: (uid: string, token: string, newPassword: string) =>
+    apiFetch(`/accounts/reset-password/${uid}/${token}/`, {
+      method: "POST",
+      body: JSON.stringify({ new_password: newPassword }),
+    }, false),
+
   getReports: (url?: string) => apiFetch(url || "/research/reports/"),
 
   getReport: (id: number) => apiFetch(`/research/reports/${id}/`),
   deleteReport: (id: number) =>
-  apiFetch(`/research/reports/${id}/`, { method: "DELETE" }),
+    apiFetch(`/research/reports/${id}/`, { method: "DELETE" }),
+  updateReport: (id: number, data: Partial<{ topic: string; archived: boolean }>) =>
+    apiFetch(`/research/reports/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
 
   createReport: (topic: string) =>
     apiFetch("/research/reports/", {
       method: "POST",
       body: JSON.stringify({ topic }),
     }),
+    sendVerifyOtp: (email: string) =>
+  apiFetch("/accounts/send-verify-otp/", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  }, false),
+
+verifyEmailOtp: (email: string, code: string) =>
+  apiFetch("/accounts/verify-email-otp/", {
+    method: "POST",
+    body: JSON.stringify({ email, code }),
+  }, false),
+
+forgotPasswordOtp: (email: string) =>
+  apiFetch("/accounts/forgot-password-otp/", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  }, false),
+
+verifyResetOtp: (email: string, code: string) =>
+  apiFetch("/accounts/verify-reset-otp/", {
+    method: "POST",
+    body: JSON.stringify({ email, code }),
+  }, false),
+
+resetPasswordOtp: (email: string, code: string, newPassword: string) =>
+  apiFetch("/accounts/reset-password-otp/", {
+    method: "POST",
+    body: JSON.stringify({ email, code, new_password: newPassword }),
+  }, false),
 };
+export async function streamReport(
+  reportId: number,
+  onEvent: (event: { type: string; message?: string; text?: string; report_id?: number }) => void
+) {
+  const token = getAccessToken();
+
+  const response = await fetch(`${API_BASE_URL}/research/reports/${reportId}/stream/`, {
+    headers: {
+      Authorization: token ? `Bearer ${token}` : "",
+
+    },
+      cache: "no-store",
+
+  });
+
+  if (!response.ok || !response.body) {
+    throw new Error("Failed to start stream");
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+
+    const messages = buffer.split("\n\n");
+    buffer = messages.pop() || "";
+
+    for (const message of messages) {
+      if (message.startsWith("data: ")) {
+        const jsonText = message.slice(6);
+        try {
+          const parsed = JSON.parse(jsonText);
+          onEvent(parsed);
+        } catch {
+          // Ignore malformed chunks
+        }
+      }
+    }
+  }
+}
